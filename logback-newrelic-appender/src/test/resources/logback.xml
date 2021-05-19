@@ -1,7 +1,6 @@
 <configuration debug="true">
 
-    <!-- 標準出力用設定 -->
-    <appender name="BAR-STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
                 %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
@@ -9,52 +8,17 @@
         </encoder>
     </appender>
 
-    <!-- ファイル出力用設定 -->
-    <appender name="FOO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 日毎にログファイルを切り替える -->
-            <fileNamePattern>foo-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- 保持しておくログアーカイブファイルの最大数 -->
-            <maxHistory>30</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%date %level [%thread] %logger{10} [%file : %line] %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <appender name="NewRelicLogs" class="com.github.newrelickk.logback.NewRelicLogsAppender">
+    <appender name="NewRelicLogs" class="io.github.newrelickk.logback.NewRelicLogsAppender">
         <url>https://log-api.newrelic.com/logs/v1</url>
-        <licenseKey>5e5f2d8724dfe2e990d3a04e83200f81aa9cNRAL</licenseKey>
         <bufferSize>10</bufferSize>
-        <maxCapacity>100</maxCapacity>
-        <milliSeconds>100000</milliSeconds>
+        <queueSize>256</queueSize>
+        <bufferSeconds>10</bufferSeconds>
         <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
     </appender>
 
-    <!-- ルートロガー -->
-    <!-- DEBUG, INFO, WARN, ERROR レベルのログを出力 -->
     <root level="DEBUG">
-        <!-- 全てのロガーのメッセージを定義した BAR-STDOUT アペンダーに出力 -->
-        <appender-ref ref="BAR-STDOUT"/>
-
-    </root>
-
-    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
         <appender-ref ref="NewRelicLogs"/>
     </root>
-
-    <!-- INFO, WARN, ERROR レベルのログを出力 -->
-    <logger name="myapp" level="INFO"/>
-
-    <!-- WARN, ERROR レベルのログを出力 -->
-    <logger name="myapp.hello.Hello" level="WARN">
-
-    </logger>
-
-    <!-- ERROR レベルのログを出力 -->
-    <logger name="myapp.world.World" level="ERROR">
-        <!-- 定義した FOO-FILE アペンダーに出力 -->
-        <appender-ref ref="FOO-FILE"/>
-    </logger>
 
 </configuration>

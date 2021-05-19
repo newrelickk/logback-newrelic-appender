@@ -1,43 +1,25 @@
-package com.github.newrelickk.logback;
+package io.github.newrelickk.logback;
 
 import ch.qos.logback.classic.LoggerContext;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.Buffer;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Flow;
-import java.util.concurrent.SubmissionPublisher;
 
 public class BufferedProcessorTest {
     @Test
-    public void log() {
+    public void log() throws InterruptedException {
         Logger log = LoggerFactory.getLogger(BufferedProcessorTest.class);
         for (int i = 0; i < 100; i++) {
             log.warn("hello warn " + i);
+            Thread.sleep(100);
         }
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         loggerContext.stop();
     }
-//    @Test
-//    public void test() {
-////        SubmissionPublisher<String> publisher = new SubmissionPublisher<>();
-////        BufferedProcessor<String> bufferedProcessor = new BufferedProcessor<>(3, 1000);
-////        MySubscriber2 subscriber = new MySubscriber2();
-////        publisher.subscribe(bufferedProcessor);
-////        bufferedProcessor.subscribe(subscriber);
-////
-////        System.out.println("Publishing Items...");
-////        String[] items = {"1", "x", "2", "x", "3", "x"};
-////        Arrays.asList(items).stream().forEach(i -> publisher.submit(i));
-////        publisher.close();
-//    }
 
-//    public class MySubscriber2 extends BufferedSubscriber<String> {
-//
-//    }
     public class MySubscriber implements Flow.Subscriber<List<String>> {
         private Flow.Subscription subscription;
 
