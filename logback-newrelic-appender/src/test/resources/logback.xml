@@ -1,0 +1,24 @@
+<configuration debug="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="NewRelicLogs" class="io.github.newrelickk.logback.NewRelicLogsAppender">
+        <url>https://log-api.newrelic.com/logs/v1</url>
+        <bufferSize>10</bufferSize>
+        <queueSize>256</queueSize>
+        <bufferSeconds>10</bufferSeconds>
+        <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="NewRelicLogs"/>
+    </root>
+
+</configuration>
