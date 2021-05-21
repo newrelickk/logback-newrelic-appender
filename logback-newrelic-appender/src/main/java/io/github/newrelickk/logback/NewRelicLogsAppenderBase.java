@@ -91,7 +91,8 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
                     }
                 }
             } catch (SecurityException e) {
-                addError("Exception occurred during getting Environment variable for licenseKey. You should have to specify licenseKey in the logback configuration.", e);
+                addError("Exception occurred during getting Environment variable for a key." +
+                        " You should have to specify licenseKey or apiKey in the logback configuration.", e);
                 return;
             }
         }
@@ -249,6 +250,10 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
 
     public boolean isNeverBlock() {
         return neverBlock;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 
     /**
