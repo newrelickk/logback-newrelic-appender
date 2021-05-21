@@ -25,6 +25,7 @@ jobs:
           GPG_SIGNING_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
       - id: publish-to-central
         name: Publish to Central Repository
+        working-directory: logback-newrelic-appender
         env:
           MAVEN_USERNAME: ${{ secrets.JIRA_ID }}
           MAVEN_PASSWORD: ${{ secrets.JIRA_PASSWORD }}
