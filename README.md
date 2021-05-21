@@ -18,7 +18,7 @@ Note: This is an unofficial package. Since this is an experimental library, plea
 <dependency>
     <groupId>io.github.newrelickk</groupId>
     <artifactId>logback-newrelic-appender</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -42,21 +42,28 @@ Note: This is an unofficial package. Since this is an experimental library, plea
         <appender name="NewRelicLogs" class="io.github.newrelickk.logback.NewRelicLogsAppender">
             <url>https://log-api.newrelic.com/logs/v1</url>
             <licenseKey>REPLACE_YOUR_LICENSE_KEY</licenseKey>
+            <!-- if you'd like to use api key, please use the following line instead of the above line.-->
+            <!-- <apiKey>REPLACE_YOUR_API_KEY</apiKey> -->
             <bufferSize>10</bufferSize>
             <maxCapacity>100</maxCapacity>
             <queueSize>10</queueSize>
             <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
         </appender>
+        
+        <!-- if you'd like to Log in Context, use the NewRelicAsyncAppender. (see New Relic doc for details) -->
+        <appender name="ASYNC" class="com.newrelic.logging.logback.NewRelicAsyncAppender">
+            <appender-ref ref="NewRelicLogs" />
+        </appender>
 
         <root level="DEBUG">
-            <appender-ref ref="STDOUT"/>
-            <appender-ref ref="NewRelicLogs"/>
+            <appender-ref ref="ASYNC" />
+            <appender-ref ref="STDOUT" />
         </root>
 
     </configuration>
     ```
   
-3. (Option) Instead of specify LicenseKey in the code or configuration file, you can specify `NEW_RELIC_LICENSE_KEY` environment variable for a New Relic License Key.
+3. (Option) Instead of specify LicenseKey or APIKey in the code or configuration file, you can specify `NEW_RELIC_LICENSE_KEY` or `NEW_RELIC_API_KEY` environment variable for a New Relic License Key.
   
 4. Output your log with NLog.
 
