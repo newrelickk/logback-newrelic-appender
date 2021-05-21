@@ -4,12 +4,30 @@
   <groupId>io.github.newrelickk</groupId>
   <artifactId>logback-newrelic-appender</artifactId>
   <version>0.1.1-SNAPSHOT</version>
-  <packaging>maven-plugin</packaging>
+  <packaging>jar</packaging>
 
-  <name>logback-newrelic-appender Maven Plugin</name>
-
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>A logbacl appende for sending logs to New Relic Logs</description>
   <url>https://github.com/newrelickk/logback-newrelic-appender</url>
-
+  <licenses>
+    <license>
+      <name>The Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Takayoshi Tanaka</name>
+      <email>manfred@sonatype.com</email>
+      <organization>New Relic K.K.</organization>
+      <organizationUrl>https://github.com/newrelickk</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/newrelickk/logback-newrelic-appender.git</connection>
+    <developerConnection>scm:git:ssh://github.com/newrelickk/logback-newrelic-appender.git</developerConnection>
+    <url>http://github.com/newrelickk/logback-newrelic-appender/tree/main</url>
+  </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -76,14 +94,80 @@
           <release>11</release>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.7</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9.1</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <docencoding>UTF-8</docencoding>
+          <charset>UTF-8</charset>
+          <source>7</source>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
   <distributionManagement>
+<!--    <repository>-->
+<!--      <id>github</id>-->
+<!--      <name>GitHub OWNER Apache Maven Packages</name>-->
+<!--      <url>https://maven.pkg.github.com/newrelickk/logback-newrelic-appender</url>-->
+<!--    </repository>-->
     <repository>
-      <id>github</id>
-      <name>GitHub OWNER Apache Maven Packages</name>
-      <url>https://maven.pkg.github.com/newrelickk/logback-newrelic-appender</url>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+
   </distributionManagement>
 </project>

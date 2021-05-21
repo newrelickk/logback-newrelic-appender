@@ -20,7 +20,7 @@ import java.util.concurrent.*;
  *
  * A structure is based on ch.qos.logback.core.AsyncAppenderBase class.
  *
- * @param <E>
+ * @param <E> Log Item
  */
 public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
 
@@ -168,8 +168,8 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
     /**
      * Generate the JSON formatted string for specified itesm.
      * The item is usually ILoggingEvent and com.newrelic.logging.logback.NewRelicEncoder is available.
-     * @param items
-     * @return
+     * @param items Log items to make string.
+     * @return Generated string.
      */
     protected abstract String generateBody(List<E> items);
 
@@ -260,7 +260,6 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
      * The remaining capacity available in the blocking queue.
      *
      * @return the remaining capacity
-     * @see {@link java.util.concurrent.BlockingQueue#remainingCapacity()}
      */
     public int getRemainingCapacity() {
         return blockingQueue.remainingCapacity();
