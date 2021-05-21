@@ -45,7 +45,14 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
     protected String name;
 
     private String url;
+    private static final String ENV_VAR_LICENSE_KEY = "NEW_RELIC_LICENSE_KEY";
+    private static final String HEADER_LICENSE_KEY = "X-License-Key";
     private String licenseKey;
+    private static final String ENV_VAR_API_KEY = "NEW_RELIC_API_KEY";
+    private static final String HEADER_API_KEY = "Api-Key";
+    private String apiKey;
+    private String authHeaderKey;
+    private String authHeaderValue;
     public static final int DEFAULT_BUFFER_SIZE=10;
     private int bufferSize=DEFAULT_BUFFER_SIZE;
     public static final int DEFAULT_BUFFER_SECONDS=10;
@@ -56,17 +63,36 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
     public void start() {
         if (isStarted())
             return;
-        if (licenseKey == null) {
+        if (licenseKey != null) { // use configured licenseKey
+            authHeaderKey = HEADER_LICENSE_KEY;
+            authHeaderValue = licenseKey;
+        } else if (apiKey != null) { // use configured apiKey
+            authHeaderKey = HEADER_API_KEY;
+            authHeaderValue = apiKey;
+        } else { // if none is configured, let's get from ENV VAR
             try {
-                var key = System.getenv("NEW_RELIC_LICENSE_KEY");
-                if (key == null) {
-                    addError("You should have to specify licenseKey.");
-                    return;
+                // try to get licenseKey first.
+                var key = System.getenv(ENV_VAR_LICENSE_KEY);
+                if (key != null) {
+                    addInfo("Use environment variable for License Key.");
+                    licenseKey = key;
+                    authHeaderKey = HEADER_LICENSE_KEY;
+                    authHeaderValue = licenseKey;
+                } else {
+                    // then try to get api key
+                    key = System.getenv(ENV_VAR_API_KEY);
+                    if (key != null) {
+                        addInfo("Use environment variable for Api Key.");
+                        apiKey = key;
+                        authHeaderKey = HEADER_API_KEY;
+                        authHeaderValue = apiKey;
+                    } else {
+                        addError("You should have to specify licenseKey or apiKey.");
+                    }
                 }
-                addInfo("Use environment variable for License Key.");
-                licenseKey = key;
             } catch (SecurityException e) {
-                addError("Exception occurred during getting Environment variable for licenseKey. You should have to specify licenseKey in the logback configuration.", e);
+                addError("Exception occurred during getting Environment variable for a key." +
+                        " You should have to specify licenseKey or apiKey in the logback configuration.", e);
                 return;
             }
         }
@@ -226,6 +252,10 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
         return neverBlock;
     }
 
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
     /**
      * The remaining capacity available in the blocking queue.
      *
@@ -280,7 +310,7 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
             var request = HttpRequest
                     .newBuilder(URI.create(url))
                     .header("Content-Type", "application/json")
-                    .header("X-License-Key", licenseKey)
+                    .header(authHeaderKey, authHeaderValue)
                     .POST(HttpRequest.BodyPublishers.ofString(generateBody(items)))
                     .build();
             try {
