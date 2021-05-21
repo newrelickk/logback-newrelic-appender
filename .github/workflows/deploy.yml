@@ -30,6 +30,7 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.JIRA_ID }}
           MAVEN_PASSWORD: ${{ secrets.JIRA_PASSWORD }}
         run: |
+          export GPG_TTY=$(tty)
           mvn \
             --no-transfer-progress \
             --batch-mode \
