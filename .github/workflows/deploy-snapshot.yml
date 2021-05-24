@@ -28,7 +28,7 @@ jobs:
           server-password: ${{ secrets.MAVEN_USER_PASSWORD }}
           gpg-passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }} 
-      
+      - run: cat ~/.m2/settings.xml
       - name: Deploy
         run: |
           mvn clean deploy --batch-mode --no-transfer-progress -DskipTests=true -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
