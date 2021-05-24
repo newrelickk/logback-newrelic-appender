@@ -28,7 +28,7 @@ jobs:
 
       - name: Deploy
         run: |
-          mvn clean deploy --batch-mode --no-transfer-progress -DskipTests=true -Dchangelist= -Drevision=${{ github.event.release.tag_name }} -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          mvn clean deploy --batch-mode --no-transfer-progress -DskipTests=true -Dchangelist= -Drevision=${{ github.event.release.name }} -Dgpg.passphrase=${{ secrets.MAVEN_GPG_PASSPHRASE }}
         working-directory: logback-newrelic-appender
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
