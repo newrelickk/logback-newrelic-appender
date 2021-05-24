@@ -21,7 +21,7 @@ jobs:
       - name: Set up Java with importing GPG
         uses: actions/setup-java@v2
         with: # running setup-java again overwrites the settings.xml
-          java-version: '16'
+          java-version: '15'
           distribution: 'adopt'
           server-id: ossrh 
           server-username: MAVEN_USERNAME
