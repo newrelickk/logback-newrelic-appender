@@ -13,6 +13,7 @@
         <bufferSize>10</bufferSize>
         <queueSize>256</queueSize>
         <bufferSeconds>10</bufferSeconds>
+        <attributes>Key1=Value1,Key2=Value2</attributes>
         <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
     </appender>
 

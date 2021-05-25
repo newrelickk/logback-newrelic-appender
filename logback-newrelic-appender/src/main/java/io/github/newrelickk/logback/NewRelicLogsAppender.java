@@ -4,6 +4,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This appender buffers the ILoggingEvents based on count and time,
@@ -14,7 +15,21 @@ public class NewRelicLogsAppender extends NewRelicLogsAppenderBase<ILoggingEvent
     @Override
     protected String generateBody(List<ILoggingEvent> items) {
         var sb = new StringBuilder();
-        sb.append("[{\"logs\":[");
+        sb.append("[{\"common\":{\"attributes\":{");
+        boolean isFirst = true;
+        for(var entry : attributeMap.entrySet()){
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append(",");
+            }
+            sb.append("\"");
+            sb.append(entry.getKey());
+            sb.append("\":\"");
+            sb.append(entry.getValue());
+            sb.append("\"");
+        }
+        sb.append("}},\"logs\":[");
         int c = items.size();
         for (int i = 0; i < c; i++) {
             var item = items.get(i);

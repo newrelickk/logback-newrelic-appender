@@ -10,8 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 
 /**
@@ -57,6 +56,8 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
     private int bufferSize=DEFAULT_BUFFER_SIZE;
     public static final int DEFAULT_BUFFER_SECONDS=10;
     private int bufferSeconds=DEFAULT_BUFFER_SECONDS;
+    private String attributes;
+    protected Map<String, String> attributeMap;
 
     protected Encoder<ILoggingEvent> encoder;
 
@@ -94,6 +95,28 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
                 addError("Exception occurred during getting Environment variable for a key." +
                         " You should have to specify licenseKey or apiKey in the logback configuration.", e);
                 return;
+            }
+        }
+        if (attributes == null) {
+            attributeMap = Collections.emptyMap();
+        } else {
+            attributeMap = new HashMap<>();
+            for (var pair :
+                    attributes.split(",")) {
+                var kv = pair.split("=");
+                if (kv.length != 2) {
+                    addError("Invalid attributes format. Please specify such as 'key1=value1,key2=value2'");
+                    attributeMap.clear();
+                    break;
+                }
+                var k = kv[0];
+                var v = kv[1];
+                if (k.contains("\"") || v.contains("\"")) {
+                    addError("Invalid attributes format. Please don't use '\"' in a key and a value.");
+                    attributeMap.clear();
+                    break;
+                }
+                attributeMap.put(k, v);
             }
         }
         if (queueSize < 1) {
@@ -254,6 +277,10 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
     }
 
     /**
