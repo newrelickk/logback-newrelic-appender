@@ -1,6 +1,6 @@
 # logback-newrelic-appender
 
-[![Java CI with Maven](https://github.com/newrelickk/logback-newrelic-appender/actions/workflows/maven.yml/badge.svg)](https://github.com/newrelickk/logback-newrelic-appender/actions/workflows/maven.yml)
+[![Deploy release to Maven Central](https://github.com/newrelickk/logback-newrelic-appender/actions/workflows/deploy-release.yml/badge.svg)](https://github.com/newrelickk/logback-newrelic-appender/actions/workflows/deploy-release.yml)
 
 Note: This is an unofficial package. Since this is an experimental library, please consider using more robust log shipping method (e.g. fluentd) in the production.
 
@@ -12,13 +12,13 @@ Note: This is an unofficial package. Since this is an experimental library, plea
 
 ## Usage
 
-1. Configure dependency.
+1. Configure dependency. We provde our library in [Maven Central](https://search.maven.org/artifact/io.github.newrelickk/logback-newrelic-appender).
 
 ```
 <dependency>
     <groupId>io.github.newrelickk</groupId>
     <artifactId>logback-newrelic-appender</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>0.1.2</version>
 </dependency>
 ```
 
@@ -47,6 +47,7 @@ Note: This is an unofficial package. Since this is an experimental library, plea
             <bufferSize>10</bufferSize>
             <maxCapacity>100</maxCapacity>
             <queueSize>10</queueSize>
+            <attributes>Key1=Value1,Key2=Value2</attributes>
             <encoder class="com.newrelic.logging.logback.NewRelicEncoder"/>
         </appender>
         
@@ -69,17 +70,26 @@ Note: This is an unofficial package. Since this is an experimental library, plea
 
 5. You will see your log in New Relic Logs.
 
-## Configuration Options.
+## Configuration Options
 
 - url (required): New Relic Logs endpoint. https://log-api.newrelic.com/logs/v1 (US) or https://log-api.eu.newrelic.com/log/v1 (EU).
 - licenseKey (required but you can specify through environment variable): New Relic license key.
-- bufferSize (option, default 10): The buffer size of log events. This appender buffers until either buffersize of logs are stored or bufferSeconds has passed.
-- buferSeonds (option, default 10): The buffer time. 
-- queueSize (option, default 256): The max number of buffering log events. The appender refuses to receive log event if the remaining capacity of buffering queue is less than 1/5 of queueSize.
-- encoder (reqruied): Logback encoder. The specified encoder must generate JSON element formatted text `{"key": value}`.
+- bufferSize (optional, default 10): The buffer size of log events. This appender buffers until either buffersize of logs are stored or bufferSeconds has passed.
+- buferSeonds (optional, default 10): The buffer time. 
+- queueSize (optional, default 256): The max number of buffering log events. The appender refuses to receive log event if the remaining capacity of buffering queue is less than 1/5 of queueSize.
+- encoder (reqruied): Logback encoder. The specified encoder must generate JSON element formatted text `{"key": "value"}`.
+- attributes (optional, default empty, introduced in 0.1.2): Statis key value paris for annotating each log message. You can use [Mapped Diagnostic Context (MDC)](http://logback.qos.ch/manual/mdc.html) if you'd like to add dynamic (thread-local) attributes. 
 
 ## Release Notes
 
+### 0.1.2
+
+- Add static attributes support
+
+### 0.1.1
+
+- Initial Release
+
 ## File an issue
 
-Please enable [NLog Internal Logging](https://github.com/NLog/NLog/wiki/Internal-Logging) and submit issue with your environment, configuration and logs.
+Please enable [Status Data (Internal Debug mode)](http://logback.qos.ch/manual/configuration.html#dumpingStatusData) and submit issue with your environment, configuration and logs.
