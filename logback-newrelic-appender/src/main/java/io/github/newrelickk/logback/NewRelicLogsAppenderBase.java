@@ -10,6 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -60,6 +61,8 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
     protected Map<String, String> attributeMap;
 
     protected Encoder<ILoggingEvent> encoder;
+
+    private HttpClient client;
 
     public void start() {
         if (isStarted())
@@ -129,6 +132,12 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
             discardingThreshold = queueSize/5;
         addInfo("Setting discardingThreshold to " + discardingThreshold);
 
+        client = HttpClient.newBuilder()
+                //.authenticator(Authenticator.getDefault())
+                .connectTimeout(Duration.ofSeconds(30))
+                .executor(Executors.newFixedThreadPool(2))
+                .build();
+
         bufferExecutor = Executors.newSingleThreadExecutor();
         taskExecutor = Executors.newFixedThreadPool(10);
 
@@ -174,7 +183,7 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
             addError("Failed to await termination of sending. Some events may be discarded.", e);
         }
 
-        addInfo("stopped to send logs to New Relic...");
+        addInfo("stopped to send logs to New Relic.");
     }
 
     protected void append(E eventObject) {
@@ -331,7 +340,6 @@ public abstract class NewRelicLogsAppenderBase<E> extends UnsynchronizedAppender
 
         @Override
         public void run() {
-            var client = HttpClient.newHttpClient();
             //TODO GZIP
             var request = HttpRequest
                     .newBuilder(URI.create(url))
