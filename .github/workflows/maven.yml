@@ -24,12 +24,6 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots -Dgpg.skip verify
         working-directory: logback-newrelic-appender
-      - name: Publish package
-        run: mvn --batch-mode deploy
-        working-directory: logback-newrelic-appender
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_RELIC_LICENSE_KEY: ${{ secrets.NEW_RELIC_LICENSE_KEY }}
 #       - name: Publish package
 #         working-directory: logback-newrelic-appender
 #         env:
