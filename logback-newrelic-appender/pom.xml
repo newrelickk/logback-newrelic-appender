@@ -174,7 +174,7 @@
 
   </distributionManagement>
   <properties>
-    <revision>0.1.3-SNAPSHOT</revision>
+    <revision>0.1.3</revision>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>
